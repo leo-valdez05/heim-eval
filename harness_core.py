@@ -194,13 +194,14 @@ class LLM:
     """Looks like anthropic.Anthropic() to Heim: client.messages.create(...)."""
 
     def __init__(self, backend, model, temperature=0.0, min_tokens=0,
-                 log_path="llm_calls.jsonl"):
+                 log_path="llm_calls.jsonl", max_calls=None):
         assert backend in ("anthropic", "openrouter")
         self.backend = backend
         self.model = model
         self.temperature = temperature
         self.min_tokens = min_tokens
         self.log_path = log_path
+        self.max_calls = max_calls
         self.messages = self  # so client.messages.create(...) reaches create()
         self._client = None
         self.calls = 0
@@ -211,6 +212,8 @@ class LLM:
 
     # --- public ---
     def create(self, model=None, max_tokens=1024, system=None, messages=None, **_ignored):
+        if self.max_calls is not None and self.calls >= self.max_calls:
+            raise SystemExit(f"CALL BUDGET REACHED ({self.max_calls} calls). Stopping to protect your credit.")
         start = time.time()
         text, tin, tout, error = "", 0, 0, None
         try:
