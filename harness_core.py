@@ -107,6 +107,17 @@ def rewrite_sql(sql):
 # ----------------------------------------------------------------------------
 # 2. Safe test database
 # ----------------------------------------------------------------------------
+def test_database_url():
+    """Heim's DATABASE_URL with the database name swapped to heim_test.
+    Returns None if DATABASE_URL is not set. The URL is never printed."""
+    from urllib.parse import urlparse, urlunparse
+    url = os.environ.get("DATABASE_URL")
+    if not url:
+        return None
+    parts = urlparse(url)
+    return urlunparse(parts._replace(path="/" + TEST_DB))
+
+
 def connect_test_db():
     import psycopg2
     import psycopg2.extensions
@@ -121,6 +132,9 @@ def connect_test_db():
             return super().execute(rewrite_sql(sql), vars)
 
     def get_test_connection():
+        url = test_database_url()
+        if url:
+            return psycopg2.connect(url, cursor_factory=_Cursor)
         return psycopg2.connect(
             host="localhost",
             port="5432",
