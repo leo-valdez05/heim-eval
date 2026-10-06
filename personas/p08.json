@@ -1,0 +1,165 @@
+{
+ "id": "P08",
+ "description": "Public-speaking worry in four different phrasings, plus one one-off event. Tests paraphrased recurrence and calibration.",
+ "key": {
+  "recurring_worry": "public speaking: palms sweating, freezing in meetings, avoiding the seminar, dreading questions (4 conversations)",
+  "one_off": "bike flat tyre, mentioned once",
+  "event": "department seminar Oct 12, reported Oct 13: went okay, she did not freeze",
+  "change": "moved to a new apartment (session 8)"
+ },
+ "sessions": [
+  {
+   "date": "2026-09-01",
+   "time": "20:00",
+   "messages": [
+    "Hi, I'm Tara. I'm a research assistant in a biology lab in Pune.",
+    "My palms get sweaty whenever I have to present anything.",
+    "Okay, that's all for now."
+   ]
+  },
+  {
+   "date": "2026-09-04",
+   "time": "21:00",
+   "messages": [
+    "My bike had a flat tyre on the way to the lab, what a start to the day.",
+    "I fixed it myself with a kit, I'm proud.",
+    "Good night."
+   ]
+  },
+  {
+   "date": "2026-09-07",
+   "time": "19:00",
+   "messages": [
+    "I cooked a big pot of khichdi for the week.",
+    "I'm reading a novel at night to unwind.",
+    "Talk soon."
+   ]
+  },
+  {
+   "date": "2026-09-10",
+   "time": "20:30",
+   "messages": [
+    "In the lab meeting I froze when my supervisor asked me a question.",
+    "I knew the answer but my mind went blank.",
+    "Bye for now."
+   ]
+  },
+  {
+   "date": "2026-09-13",
+   "time": "18:30",
+   "messages": [
+    "I went for a long trek on Saturday.",
+    "It was beautiful and quiet.",
+    "That's all."
+   ]
+  },
+  {
+   "date": "2026-09-16",
+   "time": "20:00",
+   "messages": [
+    "I have to give a department seminar next month.",
+    "I keep thinking of reasons to ask someone else to do it.",
+    "Good night."
+   ]
+  },
+  {
+   "date": "2026-09-23",
+   "time": "20:30",
+   "messages": [
+    "I moved to a new apartment this week, closer to the lab.",
+    "It's small but I can walk to work now.",
+    "The seminar is on October 12 and I haven't even started the slides.",
+    "I've been avoiding it, honestly. I dread standing in front of everyone.",
+    "Okay, bye for now."
+   ]
+  },
+  {
+   "date": "2026-09-30",
+   "time": "19:30",
+   "messages": [
+    "I made a rough set of slides today.",
+    "My supervisor said I should rehearse out loud.",
+    "Talk soon."
+   ]
+  },
+  {
+   "date": "2026-10-06",
+   "time": "21:00",
+   "messages": [
+    "I practised in front of the mirror and my voice still shakes.",
+    "I worry that I'll go blank in front of the whole department.",
+    "Goodnight."
+   ]
+  },
+  {
+   "date": "2026-10-12",
+   "time": "08:30",
+   "messages": [
+    "The seminar is today.",
+    "I'm having some tea and then I'll head to the lab.",
+    "Wish me luck."
+   ]
+  },
+  {
+   "date": "2026-10-13",
+   "time": "19:00",
+   "watch": "P6_follow_up_timing",
+   "messages": [
+    "The seminar went okay, I didn't freeze.",
+    "My hands shook a little but I got through the whole talk.",
+    "I'm just glad it's done."
+   ]
+  },
+  {
+   "date": "2026-10-17",
+   "time": "20:00",
+   "messages": [
+    "Back to normal lab work this week.",
+    "My supervisor asked if I'd like to present at a conference next spring.",
+    "I said I would think about it."
+   ]
+  }
+ ],
+ "probes": [
+  {
+   "id": "P3a",
+   "kind": "calibration",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Is my trouble with speaking in front of people a recurring worry or a one-off? Answer RECURRING or ONE-OFF, and state your confidence as HIGH, MEDIUM or LOW.",
+   "expected": "RECURRING, confidence HIGH (four conversations, different wording)."
+  },
+  {
+   "id": "P3b",
+   "kind": "calibration",
+   "date": "2026-10-21",
+   "time": "10:05",
+   "question": "Is my bike's flat tyre a recurring problem or a one-off? Answer RECURRING or ONE-OFF, and state your confidence as HIGH, MEDIUM or LOW.",
+   "expected": "ONE-OFF (mentioned once); confidence should not be LOW recurring; HIGH or MEDIUM for one-off is fine."
+  },
+  {
+   "id": "P1",
+   "kind": "stale_belief",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Where do I live now?",
+   "expected": "In a new apartment closer to the lab in Pune (moved in late September)."
+  },
+  {
+   "id": "P5",
+   "kind": "temporal_correctness",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "How did my seminar go?",
+   "expected": "It went okay; she did not freeze; hands shook a little; she got through it."
+  },
+  {
+   "id": "P2",
+   "kind": "change_detection",
+   "date": "2026-10-21",
+   "time": "10:15",
+   "question": "Has anything about me changed since we first started talking?",
+   "expected": "Should mention the new apartment; maybe that she presented the seminar without freezing; supervisor suggested a conference talk."
+  }
+ ]
+}

@@ -1,0 +1,179 @@
+{
+ "id": "P10",
+ "description": "Exercise habit changes from running to cycling; exam date corrected; project deadline reported.",
+ "key": {
+  "change": "running -> cycling (session 8)",
+  "correction": "exam is Nov 20, not in December",
+  "event": "project submission Oct 9, reported Oct 10: submitted on time, one section rushed",
+  "recurring_worry": "not enough sleep because of studying late, 4 conversations"
+ },
+ "sessions": [
+  {
+   "date": "2026-09-01",
+   "time": "20:00",
+   "messages": [
+    "Hi, I'm Neha. I'm a final-year civil engineering student in Jaipur.",
+    "I go running every morning before class.",
+    "I study until two in the morning most days and I'm always sleepy.",
+    "Okay, that's all for now."
+   ]
+  },
+  {
+   "date": "2026-09-04",
+   "time": "21:00",
+   "messages": [
+    "Ran five kilometres today in the cool morning air.",
+    "I fell asleep in the structures lecture.",
+    "Good night."
+   ]
+  },
+  {
+   "date": "2026-09-07",
+   "time": "19:00",
+   "messages": [
+    "I made a model bridge with my project group.",
+    "My exams are in December I think, I need to check the date.",
+    "Talk soon."
+   ]
+  },
+  {
+   "date": "2026-09-10",
+   "time": "20:30",
+   "messages": [
+    "I slept four hours again and it shows.",
+    "My group wants to meet at night because everyone is busy in the day.",
+    "Bye for now."
+   ]
+  },
+  {
+   "date": "2026-09-13",
+   "time": "18:30",
+   "messages": [
+    "Went to a lake with friends on Saturday.",
+    "Best day in weeks.",
+    "That's all."
+   ]
+  },
+  {
+   "date": "2026-09-16",
+   "time": "20:00",
+   "messages": [
+    "The project submission is on October 9.",
+    "We still have the report to write.",
+    "Good night."
+   ]
+  },
+  {
+   "date": "2026-09-23",
+   "time": "20:00",
+   "messages": [
+    "I got a bicycle from my cousin, a proper geared one.",
+    "I've switched from running to cycling in the mornings, it's much more fun.",
+    "I also checked the notice: my exam is on November 20, not in December.",
+    "I told you December earlier, that was wrong.",
+    "So I have less time than I thought.",
+    "I'll make a study plan this week.",
+    "I'll keep you posted on how it goes.",
+    "Okay, that's all for tonight."
+   ]
+  },
+  {
+   "date": "2026-09-30",
+   "time": "19:30",
+   "messages": [
+    "Cycled 12 kilometres before class, I felt great.",
+    "I'm still sleeping too little though.",
+    "Talk soon."
+   ]
+  },
+  {
+   "date": "2026-10-05",
+   "time": "22:30",
+   "messages": [
+    "We're finishing the report tonight, it's going to be a long night.",
+    "I'll probably get three hours of sleep.",
+    "Goodnight."
+   ]
+  },
+  {
+   "date": "2026-10-09",
+   "time": "21:00",
+   "messages": [
+    "We submitted the project today.",
+    "I'm exhausted but relieved.",
+    "I'll tell you how it went tomorrow."
+   ]
+  },
+  {
+   "date": "2026-10-10",
+   "time": "19:00",
+   "watch": "P6_follow_up_timing",
+   "messages": [
+    "We submitted on time yesterday, though one section was rushed.",
+    "The professor said the bridge model was impressive.",
+    "I'm just happy it's over."
+   ]
+  },
+  {
+   "date": "2026-10-15",
+   "time": "20:30",
+   "watch": "P7_repeat_ask",
+   "messages": [
+    "Started exam preparation, there's so much to cover.",
+    "I cycled in the morning again, it clears my head.",
+    "See you."
+   ]
+  },
+  {
+   "date": "2026-10-18",
+   "time": "23:00",
+   "messages": [
+    "Studying again until very late.",
+    "I know I should sleep more but there's no time.",
+    "Thanks for listening."
+   ]
+  }
+ ],
+ "probes": [
+  {
+   "id": "P1",
+   "kind": "stale_belief",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "What exercise do I do in the mornings?",
+   "expected": "Cycling (she switched from running)."
+  },
+  {
+   "id": "P2",
+   "kind": "change_detection",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Has anything about me changed since we first started talking?",
+   "expected": "Should mention switching from running to cycling; maybe the corrected exam date."
+  },
+  {
+   "id": "P3",
+   "kind": "calibration",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Is my lack of sleep a recurring worry or a one-off? Answer RECURRING or ONE-OFF, and state your confidence as HIGH, MEDIUM or LOW.",
+   "expected": "RECURRING, confidence HIGH (4+ conversations)."
+  },
+  {
+   "id": "P5",
+   "kind": "temporal_correctness",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "How did my project submission go?",
+   "expected": "Submitted on time (Oct 9); one section was rushed; professor praised the bridge model."
+  },
+  {
+   "id": "P8",
+   "kind": "correction_visible",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "When is my exam?",
+   "expected": "November 20 (not December); it has not happened yet."
+  }
+ ]
+}

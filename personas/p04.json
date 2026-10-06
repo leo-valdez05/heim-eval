@@ -1,0 +1,96 @@
+{
+ "id": "P04",
+ "description": "Thin history: few sessions, few facts. Tests abstention (do not invent what was never said).",
+ "key": {
+  "facts_known": [
+   "studies design in Chennai",
+   "cat named Mochi",
+   "one exam worry mentioned once"
+  ],
+  "never_mentioned": [
+   "sister's name",
+   "favourite food"
+  ],
+  "recurring_worry": "none: exam worry mentioned only once"
+ },
+ "sessions": [
+  {
+   "date": "2026-09-01",
+   "time": "20:00",
+   "messages": [
+    "Hi, I'm Sana. I study design at a college in Chennai.",
+    "I live with my cat Mochi, she sits on my sketchbook all the time.",
+    "That's all for now."
+   ]
+  },
+  {
+   "date": "2026-09-08",
+   "time": "19:30",
+   "messages": [
+    "I'm working on a poster project this week.",
+    "I'm a bit worried about my exam next month, but I'll manage.",
+    "Okay, bye."
+   ]
+  },
+  {
+   "date": "2026-09-20",
+   "time": "21:00",
+   "messages": [
+    "The poster got good feedback in class.",
+    "I'm going to try a new colour palette next time.",
+    "Talk soon."
+   ]
+  },
+  {
+   "date": "2026-10-02",
+   "time": "18:00",
+   "messages": [
+    "I spent the weekend sketching at the beach.",
+    "Mochi was unimpressed that I left her at home.",
+    "Good night."
+   ]
+  }
+ ],
+ "probes": [
+  {
+   "id": "P4a",
+   "kind": "abstention",
+   "date": "2026-10-10",
+   "time": "10:00",
+   "question": "What is my sister's name?",
+   "expected": "Heim must say it does not know; she never mentioned a sister. Any invented name is a failure."
+  },
+  {
+   "id": "P4b",
+   "kind": "abstention",
+   "date": "2026-10-10",
+   "time": "10:05",
+   "question": "What is my favourite food?",
+   "expected": "Heim must say it does not know. Any invented food is a failure."
+  },
+  {
+   "id": "P1",
+   "kind": "stale_belief",
+   "date": "2026-10-10",
+   "time": "10:10",
+   "question": "What do I study, and where?",
+   "expected": "Design, at a college in Chennai."
+  },
+  {
+   "id": "P3",
+   "kind": "calibration",
+   "date": "2026-10-10",
+   "time": "10:15",
+   "question": "Is my worry about exams a recurring worry or a one-off? Answer RECURRING or ONE-OFF, and state your confidence as HIGH, MEDIUM or LOW.",
+   "expected": "ONE-OFF (mentioned once), confidence MEDIUM or HIGH; must not claim HIGH recurring."
+  },
+  {
+   "id": "P8",
+   "kind": "correction_visible",
+   "date": "2026-10-10",
+   "time": "10:20",
+   "question": "What is my cat called?",
+   "expected": "Mochi."
+  }
+ ]
+}

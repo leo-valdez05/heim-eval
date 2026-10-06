@@ -1,0 +1,170 @@
+{
+ "id": "P07",
+ "description": "Several corrections, including a correction of a future plan.",
+ "key": {
+  "corrections": [
+   "manager is Pooja, not Priya",
+   "team has 5 people, not 8",
+   "move to Mumbai postponed from November to January"
+  ],
+  "recurring_worry": "back-to-back meetings leaving no time for real work, 4 conversations"
+ },
+ "sessions": [
+  {
+   "date": "2026-09-01",
+   "time": "20:00",
+   "messages": [
+    "Hi, I'm Arjun. I work in product operations at a logistics company in Delhi.",
+    "My manager Priya is supportive and my team has eight people.",
+    "My calendar is full of meetings, I barely get to do actual work.",
+    "Okay, that's all for now."
+   ]
+  },
+  {
+   "date": "2026-09-04",
+   "time": "21:00",
+   "messages": [
+    "Seven meetings today and none of them needed me.",
+    "I did my real work after nine in the evening.",
+    "Good night."
+   ]
+  },
+  {
+   "date": "2026-09-07",
+   "time": "19:00",
+   "messages": [
+    "Went cycling by the river on Sunday.",
+    "I'm planning to move to Mumbai in November for a new role.",
+    "Talk soon."
+   ]
+  },
+  {
+   "date": "2026-09-10",
+   "time": "20:30",
+   "messages": [
+    "Another day of back-to-back calls and no focus time.",
+    "I miss having one clear hour to think.",
+    "Bye for now."
+   ]
+  },
+  {
+   "date": "2026-09-13",
+   "time": "18:30",
+   "messages": [
+    "I cooked rajma chawal for friends.",
+    "They loved it.",
+    "That's all."
+   ]
+  },
+  {
+   "date": "2026-09-16",
+   "time": "20:00",
+   "messages": [
+    "I've started looking at flats in Mumbai online.",
+    "Prices are shocking.",
+    "Good night."
+   ]
+  },
+  {
+   "date": "2026-09-23",
+   "time": "20:00",
+   "messages": [
+    "I need to fix a few things I told you earlier.",
+    "My manager is not Priya, it's Pooja. Priya is a colleague on another team.",
+    "Also my team has five people, not eight. I was counting people I just work with.",
+    "And the move to Mumbai is not in November anymore, it got postponed to January.",
+    "My company delayed the new role by two months.",
+    "So I'll stay in Delhi until the end of the year.",
+    "I'm slightly relieved about the extra time.",
+    "Okay, that's all for tonight."
+   ]
+  },
+  {
+   "date": "2026-09-30",
+   "time": "19:30",
+   "messages": [
+    "Pooja blocked two hours of focus time for me every day.",
+    "It's the first time in months I finished a report during working hours.",
+    "Talk soon."
+   ]
+  },
+  {
+   "date": "2026-10-05",
+   "time": "21:00",
+   "messages": [
+    "The meetings crept back this week, five on Tuesday alone.",
+    "I wish people would use email.",
+    "Goodnight."
+   ]
+  },
+  {
+   "date": "2026-10-10",
+   "time": "18:00",
+   "messages": [
+    "Went cycling again, 30 km this time.",
+    "I'm saving for the Mumbai deposit.",
+    "Good night."
+   ]
+  },
+  {
+   "date": "2026-10-14",
+   "time": "20:30",
+   "messages": [
+    "Another heavy-meeting day, I had no time to think.",
+    "Pooja said she will help cut some meetings.",
+    "See you."
+   ]
+  },
+  {
+   "date": "2026-10-18",
+   "time": "19:00",
+   "messages": [
+    "Cooked dal tonight and it was fine.",
+    "Nothing else new.",
+    "Thanks for listening."
+   ]
+  }
+ ],
+ "probes": [
+  {
+   "id": "P1",
+   "kind": "stale_belief",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "What is my manager's name?",
+   "expected": "Pooja (corrected from Priya; Priya is a colleague)."
+  },
+  {
+   "id": "P2",
+   "kind": "change_detection",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Has anything about me changed since we first started talking?",
+   "expected": "Should mention the Mumbai move being postponed to January; maybe corrected manager/team facts."
+  },
+  {
+   "id": "P3",
+   "kind": "calibration",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Is my problem with too many meetings a recurring worry or a one-off? Answer RECURRING or ONE-OFF, and state your confidence as HIGH, MEDIUM or LOW.",
+   "expected": "RECURRING, confidence HIGH (4+ conversations)."
+  },
+  {
+   "id": "P5",
+   "kind": "temporal_correctness",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "When am I moving to Mumbai?",
+   "expected": "January (postponed from November); not yet happened."
+  },
+  {
+   "id": "P8",
+   "kind": "correction_visible",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "How many people are on my team?",
+   "expected": "Five (not eight)."
+  }
+ ]
+}

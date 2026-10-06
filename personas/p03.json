@@ -1,0 +1,179 @@
+{
+ "id": "P03",
+ "description": "MS student changes thesis advisor; diet correction; thesis-procrastination worry.",
+ "key": {
+  "change": "advisor changed from Dr. Kulkarni to Dr. Rao (session 8)",
+  "correction": "pescatarian, not vegetarian",
+  "recurring_worry": "putting off thesis writing, 4 conversations, different words",
+  "event": "committee meeting Oct 7, reported Oct 8: went fine, needs to rewrite chapter 2"
+ },
+ "sessions": [
+  {
+   "date": "2026-09-01",
+   "time": "21:00",
+   "messages": [
+    "Hello, I'm Rohan. I'm doing a master's in data science and my thesis advisor is Dr. Kulkarni.",
+    "My thesis is on recommendation systems for small online shops.",
+    "I keep opening the document and then doing anything but writing.",
+    "Okay, that's it for today."
+   ]
+  },
+  {
+   "date": "2026-09-04",
+   "time": "20:30",
+   "messages": [
+    "I spent the whole afternoon cleaning my dataset instead of writing the introduction.",
+    "I'm vegetarian so the canteen options are limited and I mostly eat the same thing.",
+    "Talk later."
+   ]
+  },
+  {
+   "date": "2026-09-07",
+   "time": "19:00",
+   "messages": [
+    "I played football with my labmates, it felt great.",
+    "I should start writing in the mornings.",
+    "Good night."
+   ]
+  },
+  {
+   "date": "2026-09-10",
+   "time": "22:00",
+   "messages": [
+    "I told myself I'd write two pages today and I wrote zero.",
+    "It's like the blank page makes me want to organise my desk.",
+    "Okay, bye for now."
+   ]
+  },
+  {
+   "date": "2026-09-13",
+   "time": "18:30",
+   "messages": [
+    "I went hiking this weekend with friends.",
+    "The view was worth the early start.",
+    "Talk soon."
+   ]
+  },
+  {
+   "date": "2026-09-16",
+   "time": "20:30",
+   "messages": [
+    "Dr. Kulkarni wants a draft of chapter two by the end of this month.",
+    "I have a committee meeting in October to present progress.",
+    "I'll try to get going."
+   ]
+  },
+  {
+   "date": "2026-09-23",
+   "time": "21:00",
+   "messages": [
+    "Big news, Dr. Kulkarni is moving to another university.",
+    "My new thesis advisor will be Dr. Rao, who works on ranking models.",
+    "She has asked me for a short summary of my work so far.",
+    "Actually, I need to correct something. I said I'm vegetarian, but I do eat fish.",
+    "So I'm pescatarian, I just said vegetarian because it's simpler to explain.",
+    "The committee meeting is on October 7 and I need slides.",
+    "I'll start the slides tomorrow.",
+    "Okay, that's all for tonight."
+   ]
+  },
+  {
+   "date": "2026-09-28",
+   "time": "20:00",
+   "messages": [
+    "I met Dr. Rao and she is very direct, I like that.",
+    "She wants me to cut a third of my literature review.",
+    "Back to work then."
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "time": "22:30",
+   "messages": [
+    "Another evening where I did everything except write chapter two.",
+    "I made slides at least, they are nearly ready.",
+    "Goodnight."
+   ]
+  },
+  {
+   "date": "2026-10-07",
+   "time": "18:00",
+   "messages": [
+    "The committee meeting is today and I'm nervous.",
+    "I'm going to grab some fish tacos before it starts.",
+    "Wish me luck."
+   ]
+  },
+  {
+   "date": "2026-10-08",
+   "time": "19:30",
+   "watch": "P6_follow_up_timing",
+   "messages": [
+    "The meeting went fine, the committee was supportive.",
+    "They said I need to rewrite chapter two with a clearer research question.",
+    "I'm relieved it wasn't worse."
+   ]
+  },
+  {
+   "date": "2026-10-12",
+   "time": "21:30",
+   "messages": [
+    "I started rewriting chapter two, but I only managed one paragraph.",
+    "I keep finding reasons to postpone the hard part.",
+    "Alright, bed."
+   ]
+  },
+  {
+   "date": "2026-10-16",
+   "time": "20:00",
+   "watch": "P7_repeat_ask",
+   "messages": [
+    "Dr. Rao gave detailed comments on my outline today.",
+    "I'm cooking a fish curry tonight to celebrate small progress.",
+    "Thanks for listening."
+   ]
+  }
+ ],
+ "probes": [
+  {
+   "id": "P1",
+   "kind": "stale_belief",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Who is my thesis advisor?",
+   "expected": "Dr. Rao (changed from Dr. Kulkarni in late September)."
+  },
+  {
+   "id": "P2",
+   "kind": "change_detection",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Has anything about me changed since we first started talking?",
+   "expected": "Should mention the new advisor (Dr. Rao); bonus: slides done, committee meeting done."
+  },
+  {
+   "id": "P3",
+   "kind": "calibration",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Is my habit of putting off thesis writing a recurring worry or a one-off? Answer RECURRING or ONE-OFF, and state your confidence as HIGH, MEDIUM or LOW.",
+   "expected": "RECURRING, confidence HIGH (4 conversations, different words)."
+  },
+  {
+   "id": "P5",
+   "kind": "temporal_correctness",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "How did my committee meeting go?",
+   "expected": "It went fine; supportive committee; he must rewrite chapter two with a clearer research question."
+  },
+  {
+   "id": "P8",
+   "kind": "correction_visible",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Am I vegetarian?",
+   "expected": "No, he eats fish (pescatarian); he corrected himself."
+  }
+ ]
+}

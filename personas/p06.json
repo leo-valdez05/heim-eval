@@ -1,0 +1,165 @@
+{
+ "id": "P06",
+ "description": "Interview is rescheduled; Heim must follow the new date, not the old one.",
+ "key": {
+  "event": "interview first set for Oct 8, rescheduled (told Oct 3) to Oct 15; reported Oct 15: went okay; result expected by Oct 25",
+  "recurring_worry": "feeling unappreciated at her current job, 4 conversations",
+  "watch_P6": "On Oct 8 (old date) Heim must NOT ask how the interview went; it should ask on or after Oct 15"
+ },
+ "sessions": [
+  {
+   "date": "2026-09-01",
+   "time": "20:00",
+   "messages": [
+    "Hi, I'm Divya. I work as a junior ML engineer at a startup in Gurgaon.",
+    "Nobody noticed that I fixed the data pipeline over the weekend.",
+    "Okay, that's all for now."
+   ]
+  },
+  {
+   "date": "2026-09-04",
+   "time": "21:00",
+   "messages": [
+    "I presented my model results in the team meeting and the lead only said 'thanks'.",
+    "I feel invisible sometimes.",
+    "Good night."
+   ]
+  },
+  {
+   "date": "2026-09-07",
+   "time": "19:00",
+   "messages": [
+    "I made pasta from scratch this weekend.",
+    "I'm also learning to play the ukulele, slowly.",
+    "Talk soon."
+   ]
+  },
+  {
+   "date": "2026-09-10",
+   "time": "20:30",
+   "messages": [
+    "A colleague got credit for an idea that was mine.",
+    "I don't think anyone here really values what I do.",
+    "Bye for now."
+   ]
+  },
+  {
+   "date": "2026-09-13",
+   "time": "18:00",
+   "messages": [
+    "Went for a long walk and called my mother.",
+    "It was a calm day.",
+    "That's all."
+   ]
+  },
+  {
+   "date": "2026-09-16",
+   "time": "20:00",
+   "messages": [
+    "I've started looking at other companies, just casually.",
+    "I updated my r\u00e9sum\u00e9 tonight.",
+    "Good night."
+   ]
+  },
+  {
+   "date": "2026-09-25",
+   "time": "20:30",
+   "messages": [
+    "A company called Brightlane invited me for an interview on October 8.",
+    "It's for a machine learning role, a step up from my current one.",
+    "I'll prepare over the next week.",
+    "Okay, bye."
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "time": "19:30",
+   "messages": [
+    "The recruiter emailed that the interview is moved to October 15.",
+    "So I have a bit more time to prepare, which is good.",
+    "My boss again didn't acknowledge my work this week.",
+    "Talk soon."
+   ]
+  },
+  {
+   "date": "2026-10-08",
+   "time": "20:00",
+   "watch": "P6_follow_up_timing",
+   "messages": [
+    "I did a mock interview with a friend today.",
+    "I need to practise explaining my projects more clearly.",
+    "Goodnight."
+   ]
+  },
+  {
+   "date": "2026-10-11",
+   "time": "18:30",
+   "messages": [
+    "Practised system design questions all afternoon.",
+    "Played the ukulele for a while to relax.",
+    "See you."
+   ]
+  },
+  {
+   "date": "2026-10-15",
+   "time": "21:00",
+   "watch": "P7_repeat_ask",
+   "messages": [
+    "The Brightlane interview is done.",
+    "It went okay, I answered most questions but stumbled on one design question.",
+    "They said I'd hear back by October 25."
+   ]
+  },
+  {
+   "date": "2026-10-18",
+   "time": "19:30",
+   "messages": [
+    "Waiting for the result is making me restless.",
+    "At work nobody said a word about my latest release again.",
+    "Anyway, going to cook dinner."
+   ]
+  }
+ ],
+ "probes": [
+  {
+   "id": "P1",
+   "kind": "stale_belief",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "When was my interview, and has the date changed?",
+   "expected": "It was moved from October 8 to October 15 and took place on October 15."
+  },
+  {
+   "id": "P2",
+   "kind": "change_detection",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Has anything about me changed since we first started talking?",
+   "expected": "Should mention she started job hunting / had an interview at Brightlane; no other big change."
+  },
+  {
+   "id": "P3",
+   "kind": "calibration",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Is my feeling of being unappreciated at work a recurring worry or a one-off? Answer RECURRING or ONE-OFF, and state your confidence as HIGH, MEDIUM or LOW.",
+   "expected": "RECURRING, confidence HIGH (4+ conversations)."
+  },
+  {
+   "id": "P5",
+   "kind": "temporal_correctness",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "How did my interview go, and when will I hear back?",
+   "expected": "It went okay (stumbled on one design question); she expects to hear back by October 25."
+  },
+  {
+   "id": "P8",
+   "kind": "correction_visible",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "What company interviewed me?",
+   "expected": "Brightlane."
+  }
+ ]
+}

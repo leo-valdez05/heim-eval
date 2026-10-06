@@ -1,0 +1,157 @@
+{
+ "id": "P09",
+ "description": "Job search to new job; a three-week gap in the middle where he stops talking.",
+ "key": {
+  "change": "job search -> offer (Sep 20) -> accepted (Sep 22) -> joined Oct 6 at Zenith Labs",
+  "gap": "no conversations between Sep 22 and Oct 12",
+  "event": "first day Oct 6, reported Oct 12: overwhelming but good",
+  "recurring_worry": "money running low, 4 conversations (without numbers)"
+ },
+ "sessions": [
+  {
+   "date": "2026-09-01",
+   "time": "20:00",
+   "messages": [
+    "Hi, I'm Vikram. My contract at a consulting firm ended last month and I'm looking for a job.",
+    "I'm a backend developer, mostly Java.",
+    "Money is getting tight and it's stressing me out.",
+    "Okay, that's all for now."
+   ]
+  },
+  {
+   "date": "2026-09-04",
+   "time": "21:00",
+   "messages": [
+    "Applied to twelve companies today.",
+    "I keep checking my bank app and it's making me anxious.",
+    "Good night."
+   ]
+  },
+  {
+   "date": "2026-09-07",
+   "time": "19:00",
+   "messages": [
+    "Went for a run to clear my head.",
+    "My friend offered to refer me to his company.",
+    "Talk soon."
+   ]
+  },
+  {
+   "date": "2026-09-10",
+   "time": "20:30",
+   "messages": [
+    "I had a first-round interview today, it went decently.",
+    "I'm counting every expense now, it's stressful.",
+    "Bye for now."
+   ]
+  },
+  {
+   "date": "2026-09-13",
+   "time": "18:00",
+   "messages": [
+    "Two rejections came in today.",
+    "I'm trying not to spiral about my savings.",
+    "That's all."
+   ]
+  },
+  {
+   "date": "2026-09-16",
+   "time": "20:00",
+   "messages": [
+    "A company called Zenith Labs wants a second round with their tech lead.",
+    "It's a backend role with a good team.",
+    "Good night."
+   ]
+  },
+  {
+   "date": "2026-09-20",
+   "time": "20:30",
+   "messages": [
+    "Zenith Labs gave me an offer today.",
+    "I'm so relieved, I almost didn't believe it.",
+    "I'll take a day to read the details."
+   ]
+  },
+  {
+   "date": "2026-09-22",
+   "time": "19:00",
+   "messages": [
+    "I accepted the offer at Zenith Labs.",
+    "My start date is October 6.",
+    "I'll go quiet for a bit, I have a trip with family before I start.",
+    "Talk when I'm back."
+   ]
+  },
+  {
+   "date": "2026-10-12",
+   "time": "20:00",
+   "watch": "P6_follow_up_timing",
+   "messages": [
+    "I'm back. I started at Zenith Labs on October 6.",
+    "The first week was overwhelming but the team is kind.",
+    "I'm learning their codebase one service at a time."
+   ]
+  },
+  {
+   "date": "2026-10-14",
+   "time": "19:30",
+   "messages": [
+    "I shipped my first small fix today.",
+    "Money feels less scary now that a salary is coming.",
+    "Good night."
+   ]
+  },
+  {
+   "date": "2026-10-18",
+   "time": "18:30",
+   "watch": "P7_repeat_ask",
+   "messages": [
+    "Went for a long run on the weekend.",
+    "I'm planning to join a local running group.",
+    "Thanks for listening."
+   ]
+  }
+ ],
+ "probes": [
+  {
+   "id": "P1",
+   "kind": "stale_belief",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Where do I work now?",
+   "expected": "Zenith Labs (joined October 6); no longer job hunting."
+  },
+  {
+   "id": "P2",
+   "kind": "change_detection",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Has anything about me changed since we first started talking?",
+   "expected": "Should mention: from unemployed/job hunting to employed at Zenith Labs; money worry eased."
+  },
+  {
+   "id": "P3",
+   "kind": "calibration",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Is my worry about money a recurring worry or a one-off? Answer RECURRING or ONE-OFF, and state your confidence as HIGH, MEDIUM or LOW.",
+   "expected": "RECURRING, confidence HIGH (4 conversations), though it has eased since the job."
+  },
+  {
+   "id": "P5",
+   "kind": "temporal_correctness",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "How was my first week at the new job?",
+   "expected": "Overwhelming but the team is kind; he is learning the codebase."
+  },
+  {
+   "id": "P8",
+   "kind": "correction_visible",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "What kind of developer am I, and which language do I mostly use?",
+   "expected": "Backend developer, mostly Java."
+  }
+ ]
+}

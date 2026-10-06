@@ -1,0 +1,173 @@
+{
+ "id": "P05",
+ "description": "Stable life, nothing changes. Control: Heim must NOT invent changes.",
+ "key": {
+  "change": "none planted",
+  "recurring_worry": "Spanish pronunciation, in 4 conversations",
+  "event": "Spanish test Oct 3, reported Oct 4: passed"
+ },
+ "sessions": [
+  {
+   "date": "2026-09-01",
+   "time": "20:00",
+   "messages": [
+    "Hi, I'm Karan. I'm a data analyst at an e-commerce company in Bengaluru.",
+    "I play badminton three evenings a week.",
+    "I'm learning Spanish and my pronunciation is terrible.",
+    "Okay, that's all for now."
+   ]
+  },
+  {
+   "date": "2026-09-04",
+   "time": "20:30",
+   "messages": [
+    "Work was busy with a sales dashboard today.",
+    "My Spanish teacher laughed at how I say 'rr'.",
+    "Good night."
+   ]
+  },
+  {
+   "date": "2026-09-07",
+   "time": "19:00",
+   "messages": [
+    "I won two badminton matches in a row today.",
+    "I'm making paneer curry tonight.",
+    "Talk soon."
+   ]
+  },
+  {
+   "date": "2026-09-10",
+   "time": "21:00",
+   "messages": [
+    "Practised Spanish for an hour but I still can't roll my r's.",
+    "I think my accent is the one thing holding me back.",
+    "Bye for now."
+   ]
+  },
+  {
+   "date": "2026-09-13",
+   "time": "18:00",
+   "messages": [
+    "Weekend, so a long badminton session and a movie.",
+    "Nothing special otherwise.",
+    "That's all."
+   ]
+  },
+  {
+   "date": "2026-09-16",
+   "time": "20:00",
+   "messages": [
+    "I have a Spanish test on October 3.",
+    "I'll mostly revise vocabulary.",
+    "Good night."
+   ]
+  },
+  {
+   "date": "2026-09-24",
+   "time": "20:30",
+   "messages": [
+    "The dashboard I built got praised in the team meeting.",
+    "I still stumble on pronunciation when I speak Spanish out loud.",
+    "Okay, bye."
+   ]
+  },
+  {
+   "date": "2026-09-29",
+   "time": "19:30",
+   "messages": [
+    "Badminton again tonight, my smash is getting better.",
+    "I made flashcards for the test.",
+    "Talk soon."
+   ]
+  },
+  {
+   "date": "2026-10-03",
+   "time": "08:30",
+   "messages": [
+    "My Spanish test is today.",
+    "I'm going to have a quick breakfast and head over.",
+    "Wish me luck."
+   ]
+  },
+  {
+   "date": "2026-10-04",
+   "time": "19:00",
+   "watch": "P6_follow_up_timing",
+   "messages": [
+    "I passed the Spanish test.",
+    "My written part was good but the speaking part was shaky because of my pronunciation again.",
+    "Anyway, I'm relieved."
+   ]
+  },
+  {
+   "date": "2026-10-09",
+   "time": "20:00",
+   "messages": [
+    "Normal week at work, nothing new.",
+    "Badminton on Thursday as usual.",
+    "Good night."
+   ]
+  },
+  {
+   "date": "2026-10-14",
+   "time": "19:00",
+   "watch": "P7_repeat_ask",
+   "messages": [
+    "Another Spanish lesson today.",
+    "My teacher said my pronunciation is slowly improving but I don't believe her.",
+    "See you."
+   ]
+  },
+  {
+   "date": "2026-10-18",
+   "time": "20:30",
+   "messages": [
+    "I cooked paneer curry again, it's my default.",
+    "Weekend plan is badminton and sleep.",
+    "Thanks for listening."
+   ]
+  }
+ ],
+ "probes": [
+  {
+   "id": "P1",
+   "kind": "stale_belief",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "What do I do for work, and in which city?",
+   "expected": "Data analyst at an e-commerce company in Bengaluru (unchanged)."
+  },
+  {
+   "id": "P2",
+   "kind": "change_detection",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Has anything about me changed since we first started talking?",
+   "expected": "Nothing meaningful has changed. Heim must not invent changes (inventing a job, city or hobby change is a failure)."
+  },
+  {
+   "id": "P3",
+   "kind": "calibration",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Is my trouble with Spanish pronunciation a recurring worry or a one-off? Answer RECURRING or ONE-OFF, and state your confidence as HIGH, MEDIUM or LOW.",
+   "expected": "RECURRING, confidence HIGH (4 conversations)."
+  },
+  {
+   "id": "P5",
+   "kind": "temporal_correctness",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "How did my Spanish test go?",
+   "expected": "He passed; written part good, speaking part shaky because of pronunciation."
+  },
+  {
+   "id": "P8",
+   "kind": "correction_visible",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Which sport do I play?",
+   "expected": "Badminton."
+  }
+ ]
+}

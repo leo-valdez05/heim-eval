@@ -1,0 +1,188 @@
+{
+ "id": "P02",
+ "description": "QA engineer moves city and gets a new manager; dog-name correction; unclear-feedback worry.",
+ "key": {
+  "change": "moved from Pune to Hyderabad (session 8) and got a new manager",
+  "correction": "dog is Coco (Bruno is her brother's dog)",
+  "recurring_worry": "unclear feedback from her manager, in 4 conversations",
+  "event": "client demo Oct 8, reported Oct 9: went well, client asked for two changes"
+ },
+ "sessions": [
+  {
+   "date": "2026-09-01",
+   "time": "20:15",
+   "messages": [
+    "Hi, I'm Meera. I work as a QA engineer at a small software company in Pune.",
+    "My commute is about an hour each way on the bus.",
+    "My manager said my work was 'fine' today, and I honestly have no idea what that means.",
+    "Okay, that's all from me tonight."
+   ]
+  },
+  {
+   "date": "2026-09-04",
+   "time": "21:00",
+   "messages": [
+    "Today I found a nasty bug in the payment flow before release.",
+    "I took Bruno for a long walk this evening, it cleared my head.",
+    "Good night!"
+   ]
+  },
+  {
+   "date": "2026-09-07",
+   "time": "19:30",
+   "messages": [
+    "Weekend was quiet, I mostly cooked and watched a series.",
+    "I'm trying to learn to bake bread, my first loaf came out like a brick.",
+    "Talk soon."
+   ]
+  },
+  {
+   "date": "2026-09-10",
+   "time": "20:30",
+   "messages": [
+    "In the review meeting my manager just nodded and moved on, I couldn't tell if she was happy.",
+    "I wish she would just say what she expects from me.",
+    "Anyway, going to read for a bit."
+   ]
+  },
+  {
+   "date": "2026-09-13",
+   "time": "18:45",
+   "messages": [
+    "I went to a pottery class with a friend, it was messy but fun.",
+    "I'm thinking of signing up for the next batch.",
+    "That's all for today."
+   ]
+  },
+  {
+   "date": "2026-09-16",
+   "time": "20:00",
+   "messages": [
+    "We are planning a client demo for next month at work.",
+    "I'm in charge of the test report for it.",
+    "Good night."
+   ]
+  },
+  {
+   "date": "2026-09-23",
+   "time": "20:00",
+   "messages": [
+    "Something came up at work: the company is opening a Hyderabad office and I've been offered a transfer.",
+    "I said yes. I'm moving to Hyderabad at the end of the month.",
+    "I'll also have a new manager there, someone called Imran.",
+    "Actually, I need to correct something. I said Bruno is my dog, but Bruno is my brother's dog.",
+    "My own dog is Coco, I mixed them up.",
+    "Coco is coming with me to Hyderabad.",
+    "I need to start packing this weekend.",
+    "Okay, that's all for tonight."
+   ]
+  },
+  {
+   "date": "2026-09-30",
+   "time": "21:00",
+   "messages": [
+    "I'm in Hyderabad now, the flat is small but it has a good balcony.",
+    "Coco hasn't stopped exploring every corner.",
+    "Tomorrow is my first day at the new office."
+   ]
+  },
+  {
+   "date": "2026-10-04",
+   "time": "19:00",
+   "messages": [
+    "The new team is friendly and Imran sets clear weekly goals.",
+    "The client demo is on October 8 and I'm nervous about it.",
+    "Wish me luck for the week."
+   ]
+  },
+  {
+   "date": "2026-10-08",
+   "time": "21:30",
+   "messages": [
+    "The demo is done for today, I'm exhausted.",
+    "I'll tell you how it went tomorrow.",
+    "Goodnight."
+   ]
+  },
+  {
+   "date": "2026-10-09",
+   "time": "19:00",
+   "watch": "P6_follow_up_timing",
+   "messages": [
+    "The client demo went well, they liked the report.",
+    "They asked for two small changes, which is fine.",
+    "I'm just glad it's over."
+   ]
+  },
+  {
+   "date": "2026-10-12",
+   "time": "20:00",
+   "messages": [
+    "Imran gave me proper feedback today, a whole list of what I did well and what to improve.",
+    "I wish my old manager had done that.",
+    "Anyway, I'm going to bed early."
+   ]
+  },
+  {
+   "date": "2026-10-15",
+   "time": "19:30",
+   "messages": [
+    "I tried the bread again and this time it actually rose.",
+    "Coco ate half of it before I noticed.",
+    "See you."
+   ]
+  },
+  {
+   "date": "2026-10-18",
+   "time": "20:30",
+   "watch": "P7_repeat_ask",
+   "messages": [
+    "I joined a weekend pottery group near my new flat.",
+    "It is nice to have a routine here.",
+    "Thanks for listening."
+   ]
+  }
+ ],
+ "probes": [
+  {
+   "id": "P1",
+   "kind": "stale_belief",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Which city do I live in?",
+   "expected": "Hyderabad (moved from Pune at the end of September)."
+  },
+  {
+   "id": "P2",
+   "kind": "change_detection",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Has anything about me changed since we first started talking?",
+   "expected": "Should mention the move to Hyderabad and the new manager (Imran); bonus: feedback now clear, pottery group."
+  },
+  {
+   "id": "P3",
+   "kind": "calibration",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "Is my worry about unclear feedback from my manager a recurring worry or a one-off? Answer RECURRING or ONE-OFF, and state your confidence as HIGH, MEDIUM or LOW.",
+   "expected": "RECURRING, confidence HIGH (4 conversations). Note the worry eased after the new manager."
+  },
+  {
+   "id": "P5",
+   "kind": "temporal_correctness",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "How did my client demo go?",
+   "expected": "It went well; the client liked the report and asked for two small changes."
+  },
+  {
+   "id": "P8",
+   "kind": "correction_visible",
+   "date": "2026-10-21",
+   "time": "10:00",
+   "question": "What is my dog called?",
+   "expected": "Coco (not Bruno, who is her brother's dog)."
+  }
+ ]
+}
