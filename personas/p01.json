@@ -119,35 +119,40 @@
       "kind": "stale_belief",
       "date": "2026-10-24",
       "time": "10:00",
-      "question": "What year of college am I in?"
+      "question": "What year of college am I in?",
+      "expected": "Third year (changed from second year in late Sep / Oct)."
     },
     {
       "id": "P2",
       "kind": "change_detection",
       "date": "2026-10-24",
       "time": "10:05",
-      "question": "Has anything about me changed since we first started talking?"
+      "question": "Has anything about me changed since we first started talking?",
+      "expected": "Should mention third year and that the morning drink is chai, not coffee; bonus: gym, finished app."
     },
     {
       "id": "P3",
       "kind": "calibration",
       "date": "2026-10-24",
       "time": "10:10",
-      "question": "Is my trouble with sleep a recurring worry or a one-off? Answer RECURRING or ONE-OFF, and state your confidence as HIGH, MEDIUM or LOW."
+      "question": "Is my trouble with sleep a recurring worry or a one-off? Answer RECURRING or ONE-OFF, and state your confidence as HIGH, MEDIUM or LOW.",
+      "expected": "RECURRING, confidence HIGH (4 conversations)."
     },
     {
       "id": "P5",
       "kind": "temporal_correctness",
       "date": "2026-10-24",
       "time": "10:15",
-      "question": "How did my database exam go?"
+      "question": "How did my database exam go?",
+      "expected": "It went well; finished all questions; best on normalisation."
     },
     {
       "id": "P8",
       "kind": "correction_visible",
       "date": "2026-10-24",
       "time": "10:20",
-      "question": "What do I usually drink in the morning?"
+      "question": "What do I usually drink in the morning?",
+      "expected": "Chai (corrected from coffee)."
     }
   ]
 }
