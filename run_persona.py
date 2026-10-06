@@ -1,169 +1,328 @@
 """
-run_persona.py - play one made-up person through Heim, then ask the probe questions.
+harness_core.py - shared pieces of the Heim evaluation harness.
 
-Usage (on the server, from ~/heim-eval):
-  ~/ai-continuity-assistant/venv/bin/python3 run_persona.py personas/P01.json \
-      --backend anthropic --model claude-sonnet-4-6 --run 1
+It does three jobs. It never edits Heim's code or prompts.
 
-It uses only the heim_test database and the fake clock. Nothing here edits Heim.
-Results are written to results/<persona>/<model>/run<N>/.
+1. FakeClock + install_clock()
+   Lets us replay weeks of conversation in minutes.
+   - Python side: datetime.datetime is replaced by a version whose now() returns the fake time.
+   - Database side: NOW() and CURRENT_DATE inside every SQL statement are rewritten
+     to the fake time before the statement runs.
+
+2. connect_test_db()
+   Points Heim's database module at the database named heim_test, and refuses to run
+   if the connection is to anything else. The live database (heim_db) cannot be reached.
+
+3. LLM
+   A stand-in for the `client` object Heim calls. It can talk to Claude or to any
+   OpenRouter model (for example openai/gpt-oss-20b), and it logs every call.
 """
-import argparse
-import json
 import os
 import re
 import sys
+import json
 import time
+import datetime as _dt
+import urllib.request
+import urllib.error
 
-TABLES = ["concerns", "life_events", "recurring_patterns", "contradiction_log",
-          "conversation_sessions", "daily_diaries", "user_profile",
-          "ontology_triples", "mood_shifts", "profile_archive"]
+HEIM_PATH = os.path.expanduser(os.environ.get("HEIM_PATH", "~/ai-continuity-assistant"))
+TEST_DB = "heim_test"
+
+_REAL_DATETIME = _dt.datetime
+_clock = None
 
 
-def snapshot(db, uid):
-    """What Heim has stored about this person right now (for the audit trail)."""
+# ----------------------------------------------------------------------------
+# 1. Fake clock
+# ----------------------------------------------------------------------------
+class FakeClock:
+    def __init__(self, start="2026-10-01 09:00"):
+        self.set(start)
+
+    def set(self, date_str, time_str=None):
+        if time_str is None:
+            parts = date_str.replace("T", " ").split(" ")
+            date_str = parts[0]
+            time_str = parts[1] if len(parts) > 1 else "09:00"
+        fmt = "%Y-%m-%d %H:%M:%S" if time_str.count(":") == 2 else "%Y-%m-%d %H:%M"
+        self._now = _REAL_DATETIME.strptime(f"{date_str} {time_str}", fmt)
+
+    def now(self):
+        return self._now
+
+    def date_str(self):
+        return self._now.strftime("%Y-%m-%d")
+
+    def iso(self):
+        return self._now.isoformat()
+
+    def advance(self, **kwargs):
+        self._now = self._now + _dt.timedelta(**kwargs)
+
+
+def install_clock(clock):
+    """Call this BEFORE importing Heim's modules."""
+    global _clock
+    _clock = clock
+
+    class FakeDatetime(_REAL_DATETIME):
+        @classmethod
+        def now(cls, tz=None):
+            if tz is not None:
+                return _REAL_DATETIME.now(tz)
+            n = _clock.now()
+            return cls(n.year, n.month, n.day, n.hour, n.minute, n.second)
+
+        @classmethod
+        def today(cls):
+            return cls.now()
+
+        @classmethod
+        def utcnow(cls):
+            return cls.now()
+
+    _dt.datetime = FakeDatetime
+    for name in ("emotion_ai2", "database"):
+        m = sys.modules.get(name)
+        if m is not None and getattr(m, "datetime", None) is _REAL_DATETIME:
+            m.datetime = FakeDatetime
+    return FakeDatetime
+
+
+_NOW_RE = re.compile(r"\bNOW\(\)", re.I)
+_TODAY_RE = re.compile(r"\bCURRENT_DATE\b", re.I)
+
+
+def rewrite_sql(sql):
+    """Replace the database's own clock with the fake clock."""
+    if _clock is None or not isinstance(sql, str):
+        return sql
+    ts = _clock.now().strftime("%Y-%m-%d %H:%M:%S")
+    sql = _NOW_RE.sub(f"TIMESTAMP '{ts}'", sql)
+    sql = _TODAY_RE.sub(f"DATE '{ts[:10]}'", sql)
+    return sql
+
+
+# ----------------------------------------------------------------------------
+# 2. Safe test database
+# ----------------------------------------------------------------------------
+def test_database_url():
+    """Heim's DATABASE_URL with the database name swapped to heim_test.
+    Returns None if DATABASE_URL is not set. The URL is never printed."""
+    from urllib.parse import urlparse, urlunparse
+    url = os.environ.get("DATABASE_URL")
+    if not url:
+        return None
+    parts = urlparse(url)
+    return urlunparse(parts._replace(path="/" + TEST_DB))
+
+
+def connect_test_db():
+    import psycopg2
+    import psycopg2.extensions
+    from dotenv import load_dotenv
+
+    if HEIM_PATH not in sys.path:
+        sys.path.insert(0, HEIM_PATH)
+    load_dotenv(os.path.join(HEIM_PATH, ".env"))
+
+    class _Cursor(psycopg2.extensions.cursor):
+        def execute(self, sql, vars=None):
+            return super().execute(rewrite_sql(sql), vars)
+
+    def get_test_connection():
+        url = test_database_url()
+        if url:
+            return psycopg2.connect(url, cursor_factory=_Cursor)
+        return psycopg2.connect(
+            host="localhost",
+            port="5432",
+            database=TEST_DB,
+            user="postgres",
+            password=os.environ.get("DB_PASSWORD"),
+            cursor_factory=_Cursor,
+        )
+
+    conn = get_test_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT current_database()")
+    name = cur.fetchone()[0]
+    conn.close()
+    if name != TEST_DB:
+        raise SystemExit(f"REFUSING TO RUN: connected to '{name}', expected '{TEST_DB}'")
+
+    import database
+    database.get_connection = get_test_connection
+    return database
+
+
+def reset_test_db(db):
+    """Empty every table in heim_test (and nothing else)."""
     conn = db.get_connection()
     cur = conn.cursor()
-    out = {}
-    for t in TABLES:
-        try:
-            cur.execute(f"SELECT * FROM {t} WHERE user_id = %s", (uid,))
-            cols = [d[0] for d in cur.description]
-            rows = []
-            for r in cur.fetchall():
-                row = dict(zip(cols, r))
-                row.pop("embedding", None)
-                rows.append(row)
-            out[t] = rows
-        except Exception as e:
-            conn.rollback()
-            out[t] = {"error": str(e)[:120]}
+    cur.execute("SELECT current_database()")
+    if cur.fetchone()[0] != TEST_DB:
+        conn.close()
+        raise SystemExit("REFUSING TO RESET: not the test database")
+    cur.execute("SELECT tablename FROM pg_tables WHERE schemaname = 'public'")
+    tables = [r[0] for r in cur.fetchall()]
+    if tables:
+        cur.execute("TRUNCATE " + ", ".join(tables) + " RESTART IDENTITY CASCADE")
+    conn.commit()
     conn.close()
-    return out
+    ai = sys.modules.get("emotion_ai2")
+    if ai is not None:
+        ai.chat_history_by_user.clear()
 
 
-def end_conversation(db, ai, uid, conv):
-    """Same steps as the /end_conversation route in app.py."""
-    history = ai.get_chat_history(uid)
-    if history:
-        summary = ai.generate_conversation_summary(history)
-        if summary:
-            embedding = ai.generate_embedding(summary)
-            db.save_conversation_session(conv, uid, summary, embedding)
-    ai.check_for_contradictions(uid, history)
-    try:
-        ai.extract_ontology_triples(uid)
-    except Exception as e:
-        print("extract_ontology_triples failed:", e)
+# ----------------------------------------------------------------------------
+# 3. Model stand-in
+# ----------------------------------------------------------------------------
+class _Block:
+    def __init__(self, text):
+        self.text = text
+        self.type = "text"
 
 
-def send(db, ai, clock, uid, conv, text):
-    """One user message, in the same order as the /chat route in app.py."""
-    db.update_last_seen(uid)
-    reply, emotion, floor_color, leaving, _ = ai.handle_message(
-        text, uid, conv, clock.date_str(), "text", clock.iso(), None)
-    db.save_message(conv, "user", text)
-    db.save_message(conv, "ai", reply)
-    db.update_conversation_title(conv, text[:50])
-    return reply, emotion
+class _Response:
+    def __init__(self, text):
+        self.content = [_Block(text)]
 
 
-def run_persona(persona, db, ai, llm, clock, outdir, run_id=1):
-    os.makedirs(outdir, exist_ok=True)
-    transcript, snapshots, probe_rows = [], [], []
+class LLM:
+    """Looks like anthropic.Anthropic() to Heim: client.messages.create(...)."""
 
-    username = f"{persona['id']}_run{run_id}_{int(time.time())}"
-    uid = db.create_user(username, "pw-not-secret")
-    db.create_initial_profile(uid)
+    def __init__(self, backend, model, temperature=0.0, min_tokens=0,
+                 log_path="llm_calls.jsonl", max_calls=None):
+        assert backend in ("anthropic", "openrouter")
+        self.backend = backend
+        self.model = model
+        self.temperature = temperature
+        self.min_tokens = min_tokens
+        self.log_path = log_path
+        self.max_calls = max_calls
+        self.messages = self  # so client.messages.create(...) reaches create()
+        self._client = None
+        self.calls = 0
+        self.tokens_in = 0
+        self.tokens_out = 0
+        self.seconds = 0.0
+        self.failures = 0
+        self.full_log_path = None  # set to a file path to keep every prompt and reply
 
-    # ---- the story, session by session ----
-    for si, session in enumerate(persona["sessions"], start=1):
-        clock.set(session["date"], session.get("time", "20:00"))
-        ai.reset_chat_history(uid)  # a new visit: the in-memory chat starts empty
-        conv = db.create_conversation("New Chat", uid)
-        for mi, text in enumerate(session["messages"]):
-            if mi > 0:
-                clock.advance(minutes=2)
+    # --- public ---
+    def create(self, model=None, max_tokens=1024, system=None, messages=None, **_ignored):
+        if self.max_calls is not None and self.calls >= self.max_calls:
+            raise SystemExit(f"CALL BUDGET REACHED ({self.max_calls} calls). Stopping to protect your credit.")
+        start = time.time()
+        text, tin, tout, error = "", 0, 0, None
+        try:
+            if self.backend == "anthropic":
+                text, tin, tout = self._call_anthropic(max_tokens, system, messages)
+            else:
+                text, tin, tout = self._call_openrouter(max_tokens, system, messages)
+        except Exception as e:
+            error = str(e)[:300]
+            self.failures += 1
+            raise
+        finally:
+            secs = time.time() - start
+            self.calls += 1
+            self.tokens_in += tin
+            self.tokens_out += tout
+            self.seconds += secs
+            self._log({"backend": self.backend, "model": self.model,
+                       "max_tokens": max_tokens, "tokens_in": tin,
+                       "tokens_out": tout, "seconds": round(secs, 2),
+                       "error": error})
+            self._log_full({"call": self.calls, "system": system,
+                            "messages": messages, "reply": text, "error": error})
+        return _Response(text)
+
+    def totals(self):
+        return {"calls": self.calls, "tokens_in": self.tokens_in,
+                "tokens_out": self.tokens_out, "seconds": round(self.seconds, 1),
+                "failures": self.failures}
+
+    # --- backends ---
+    def _call_anthropic(self, max_tokens, system, messages):
+        if self._client is None:
+            import anthropic
+            self._client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+        kwargs = dict(model=self.model, max_tokens=max_tokens,
+                      system=system or "", messages=messages)
+        try:
+            resp = self._client.messages.create(temperature=self.temperature, **kwargs)
+        except Exception as e:
+            if "temperature" in str(e).lower():
+                resp = self._client.messages.create(**kwargs)
+            else:
+                raise
+        text = "".join(b.text for b in resp.content if getattr(b, "type", "") == "text")
+        return text, resp.usage.input_tokens, resp.usage.output_tokens
+
+    def _call_openrouter(self, max_tokens, system, messages):
+        key = os.environ.get("OPENROUTER_API_KEY")
+        if not key:
+            raise RuntimeError("OPENROUTER_API_KEY is not set")
+        msgs = ([{"role": "system", "content": system}] if system else []) + list(messages)
+        payload = {
+            "model": self.model,
+            "messages": msgs,
+            "max_tokens": max(max_tokens, self.min_tokens),
+            "temperature": self.temperature,
+            "reasoning": {"effort": "low"},
+        }
+        body = json.dumps(payload).encode("utf-8")
+        last_error = None
+        for attempt in range(4):
+            req = urllib.request.Request(
+                "https://openrouter.ai/api/v1/chat/completions", data=body,
+                headers={"Authorization": "Bearer " + key,
+                         "Content-Type": "application/json"})
             try:
-                reply, emotion = send(db, ai, clock, uid, conv, text)
-                err = None
-            except Exception as e:
-                reply, emotion, err = "", "", f"{type(e).__name__}: {str(e)[:200]}"
-            transcript.append({
-                "kind": "session", "session": si, "date": clock.date_str(),
-                "message_index": mi, "user": text, "reply": reply, "emotion": emotion,
-                "watch": session.get("watch") if mi == len(session["messages"]) - 1 else None,
-                "error": err, "calls_so_far": llm.totals()["calls"]})
-            print(f"  session {si} msg {mi + 1}/{len(session['messages'])} "
-                  f"[{clock.date_str()}] calls={llm.totals()['calls']}"
-                  + (f"  ERROR {err}" if err else ""))
-        clock.advance(minutes=3)
+                with urllib.request.urlopen(req, timeout=120) as r:
+                    data = json.loads(r.read().decode("utf-8"))
+                text = (data["choices"][0]["message"].get("content") or "")
+                usage = data.get("usage", {})
+                return text, usage.get("prompt_tokens", 0), usage.get("completion_tokens", 0)
+            except urllib.error.HTTPError as e:
+                last_error = f"HTTP {e.code}"
+                if e.code not in (429, 500, 502, 503, 504):
+                    raise
+            except urllib.error.URLError as e:
+                last_error = str(e)
+            time.sleep(2 ** attempt)
+        raise RuntimeError(f"OpenRouter failed after retries: {last_error}")
+
+    def _log_full(self, row):
+        """Full audit trail: exactly what was sent to the model and what came back."""
+        if not self.full_log_path:
+            return
         try:
-            end_conversation(db, ai, uid, conv)
-        except Exception as e:
-            print("  end_conversation failed:", e)
-        snapshots.append({"after_session": si, "date": clock.date_str(),
-                          "memory": snapshot(db, uid)})
+            with open(self.full_log_path, "a") as f:
+                f.write(json.dumps(row, default=str) + "\n")
+        except Exception:
+            pass
 
-    # ---- the probe questions ----
-    for probe in persona["probes"]:
-        clock.set(probe["date"], probe.get("time", "10:00"))
-        ai.reset_chat_history(uid)
-        conv = db.create_conversation("New Chat", uid)
+    def _log(self, row):
         try:
-            reply, _ = send(db, ai, clock, uid, conv, probe["question"])
-            err = None
-        except Exception as e:
-            reply, err = "", f"{type(e).__name__}: {str(e)[:200]}"
-        probe_rows.append({"probe": probe["id"], "kind": probe["kind"],
-                           "date": clock.date_str(), "question": probe["question"],
-                           "answer": reply, "error": err})
-        print(f"  probe {probe['id']} answered ({len(reply)} chars)")
-
-    snapshots.append({"after_session": "probes", "date": clock.date_str(),
-                      "memory": snapshot(db, uid)})
-
-    with open(os.path.join(outdir, "transcript.jsonl"), "w") as f:
-        for row in transcript:
-            f.write(json.dumps(row, default=str) + "\n")
-    with open(os.path.join(outdir, "probes.json"), "w") as f:
-        json.dump({"persona": persona["id"], "answer_key": persona.get("key", {}),
-                   "probes": probe_rows}, f, indent=2, default=str)
-    with open(os.path.join(outdir, "snapshots.json"), "w") as f:
-        json.dump(snapshots, f, indent=1, default=str)
-    with open(os.path.join(outdir, "cost.json"), "w") as f:
-        json.dump(llm.totals(), f, indent=2)
-    return probe_rows
+            row["time"] = _REAL_DATETIME.now().isoformat(timespec="seconds")
+            with open(self.log_path, "a") as f:
+                f.write(json.dumps(row) + "\n")
+        except Exception:
+            pass
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("persona")
-    ap.add_argument("--backend", default="anthropic", choices=["anthropic", "openrouter"])
-    ap.add_argument("--model", default="claude-sonnet-4-6")
-    ap.add_argument("--temperature", type=float, default=0.0)
-    ap.add_argument("--min-tokens", type=int, default=0,
-                    help="raise tiny max_tokens (needed for models that think before answering)")
-    ap.add_argument("--max-calls", type=int, default=600,
-                    help="hard stop after this many model calls")
-    ap.add_argument("--run", type=int, default=1)
-    args = ap.parse_args()
-
-    from harness_core import FakeClock, LLM, setup, reset_test_db
-    persona = json.load(open(args.persona))
-    clock = FakeClock(persona["sessions"][0]["date"] + " 09:00")
-    llm = LLM(args.backend, args.model, temperature=args.temperature,
-              min_tokens=args.min_tokens, max_calls=args.max_calls)
-    db, ai = setup(clock, llm)
-    reset_test_db(db)
-
-    safe_model = re.sub(r"[^A-Za-z0-9_.-]", "_", args.model)
-    outdir = os.path.join("results", persona["id"], safe_model, f"run{args.run}")
-    print(f"Running {persona['id']} on {args.backend}:{args.model} (run {args.run})")
-    run_persona(persona, db, ai, llm, clock, outdir, args.run)
-    print("Done.", llm.totals())
-    print("Results in", outdir)
-
-
-if __name__ == "__main__":
-    main()
+# ----------------------------------------------------------------------------
+# One call that wires everything together
+# ----------------------------------------------------------------------------
+def setup(clock, llm):
+    """Order matters: clock first, then database, then Heim, then the model stand-in."""
+    install_clock(clock)
+    db = connect_test_db()  # also loads Heim's .env
+    os.environ.setdefault("ANTHROPIC_API_KEY", "unused-placeholder")
+    import emotion_ai2
+    emotion_ai2.client = llm
+    return db, emotion_ai2
