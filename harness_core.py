@@ -209,6 +209,7 @@ class LLM:
         self.tokens_out = 0
         self.seconds = 0.0
         self.failures = 0
+        self.full_log_path = None  # set to a file path to keep every prompt and reply
 
     # --- public ---
     def create(self, model=None, max_tokens=1024, system=None, messages=None, **_ignored):
@@ -235,6 +236,8 @@ class LLM:
                        "max_tokens": max_tokens, "tokens_in": tin,
                        "tokens_out": tout, "seconds": round(secs, 2),
                        "error": error})
+            self._log_full({"call": self.calls, "system": system,
+                            "messages": messages, "reply": text, "error": error})
         return _Response(text)
 
     def totals(self):
@@ -292,6 +295,16 @@ class LLM:
                 last_error = str(e)
             time.sleep(2 ** attempt)
         raise RuntimeError(f"OpenRouter failed after retries: {last_error}")
+
+    def _log_full(self, row):
+        """Full audit trail: exactly what was sent to the model and what came back."""
+        if not self.full_log_path:
+            return
+        try:
+            with open(self.full_log_path, "a") as f:
+                f.write(json.dumps(row, default=str) + "\n")
+        except Exception:
+            pass
 
     def _log(self, row):
         try:
