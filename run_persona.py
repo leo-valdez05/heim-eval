@@ -45,6 +45,7 @@ def snapshot(db, uid):
 def end_conversation(db, ai, uid, conv):
     """Same steps as the /end_conversation route in app.py."""
     history = ai.get_chat_history(uid)
+    hist_len = len(history)  # Heim only checks for contradictions if this is 16 or more
     if history:
         summary = ai.generate_conversation_summary(history)
         if summary:
@@ -55,6 +56,7 @@ def end_conversation(db, ai, uid, conv):
         ai.extract_ontology_triples(uid)
     except Exception as e:
         print("extract_ontology_triples failed:", e)
+    return hist_len
 
 
 def send(db, ai, clock, uid, conv, text):
@@ -98,11 +100,14 @@ def run_persona(persona, db, ai, llm, clock, outdir, run_id=1):
                   f"[{clock.date_str()}] calls={llm.totals()['calls']}"
                   + (f"  ERROR {err}" if err else ""))
         clock.advance(minutes=3)
+        hist_len = None
         try:
-            end_conversation(db, ai, uid, conv)
+            hist_len = end_conversation(db, ai, uid, conv)
         except Exception as e:
             print("  end_conversation failed:", e)
+        print(f"  session {si} ended: chat history entries = {hist_len}")
         snapshots.append({"after_session": si, "date": clock.date_str(),
+                          "history_len_at_end": hist_len,
                           "memory": snapshot(db, uid)})
 
     # ---- the probe questions ----
