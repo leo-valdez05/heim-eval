@@ -1,0 +1,153 @@
+{
+  "id": "P01",
+  "description": "Student. Year of study changes (second to third). Exam on Oct 10 settles on Oct 12. Sleep worry is raised four times in different words. Drink preference is corrected.",
+  "key": {
+    "year_old": "second year",
+    "year_new": "third year",
+    "year_change_session": 4,
+    "exam": "database exam on Oct 10; went well, reported on Oct 12",
+    "recurring_worry": "late-night sleep problems, mentioned in 4 separate conversations in different words",
+    "drink_old": "coffee",
+    "drink_new": "chai (hates coffee)",
+    "planted_change": true
+  },
+  "sessions": [
+    {
+      "date": "2026-10-01",
+      "time": "20:30",
+      "messages": [
+        "Hi, I just wanted to try this out. I'm a second-year computer science student.",
+        "Most of my days are lectures and then working on a small web project in the evenings.",
+        "I stayed up until 3 AM coding again last night and I can't seem to fix my sleep.",
+        "Anyway, that's enough for today. I'll talk to you later."
+      ]
+    },
+    {
+      "date": "2026-10-03",
+      "time": "21:00",
+      "messages": [
+        "My second-year project is a note-taking app and it is finally starting to work.",
+        "I have a database exam on October 10 and I honestly haven't studied enough for it.",
+        "I slept at 4 AM again this week and my whole schedule feels wrecked.",
+        "Okay, I'm going to go revise a little now."
+      ]
+    },
+    {
+      "date": "2026-10-06",
+      "time": "19:45",
+      "messages": [
+        "I need coffee to survive the mornings, I'm basically a coffee person.",
+        "I was exhausted in class today because of my late nights.",
+        "I also spent some time practising guitar this evening, it helped me relax.",
+        "Alright, talk to you soon."
+      ]
+    },
+    {
+      "date": "2026-10-08",
+      "time": "20:00",
+      "messages": [
+        "Classes for my third year started this week and the workload feels heavier already.",
+        "The new subjects are operating systems and computer networks.",
+        "I made a study timetable on my phone for the next two days.",
+        "Actually, I need to correct something. I said I'm a coffee person, but I really dislike coffee and I drink chai every morning.",
+        "I mixed that up when I was tired.",
+        "I'm also meeting two friends at the library tomorrow to study together.",
+        "We want to go through the old exam papers for databases.",
+        "Okay, that's all for tonight."
+      ]
+    },
+    {
+      "date": "2026-10-10",
+      "time": "08:30",
+      "messages": [
+        "My database exam is today and I am quite nervous.",
+        "I'm going to have chai and then head to the exam hall.",
+        "Wish me luck, I'm leaving now."
+      ]
+    },
+    {
+      "date": "2026-10-11",
+      "time": "18:30",
+      "watch": "P6_follow_up_timing",
+      "messages": [
+        "I watched a movie with my cousin this afternoon.",
+        "We also ordered pizza, it was really good.",
+        "Now I'm just relaxing on the sofa."
+      ]
+    },
+    {
+      "date": "2026-10-12",
+      "time": "19:00",
+      "messages": [
+        "The exam went well. I finished all the questions and I feel relieved.",
+        "I think I did best on the normalisation questions.",
+        "Now I can finally focus on my other subjects."
+      ]
+    },
+    {
+      "date": "2026-10-14",
+      "time": "18:00",
+      "watch": "P7_repeat_ask",
+      "messages": [
+        "I started reading about how operating systems schedule processes.",
+        "It is more interesting than I expected.",
+        "I'm going to go for a walk now."
+      ]
+    },
+    {
+      "date": "2026-10-16",
+      "time": "22:30",
+      "messages": [
+        "Today I had a long lab session and then went to the gym.",
+        "My sleep is still a mess, I keep lying awake until the early morning.",
+        "Anyway, I am heading to bed. Goodnight."
+      ]
+    },
+    {
+      "date": "2026-10-20",
+      "time": "19:30",
+      "messages": [
+        "I submitted my operating systems assignment today.",
+        "I'm planning to start the networks lab tomorrow.",
+        "Thanks for listening. See you."
+      ]
+    }
+  ],
+  "probes": [
+    {
+      "id": "P1",
+      "kind": "stale_belief",
+      "date": "2026-10-24",
+      "time": "10:00",
+      "question": "What year of college am I in?"
+    },
+    {
+      "id": "P2",
+      "kind": "change_detection",
+      "date": "2026-10-24",
+      "time": "10:05",
+      "question": "Has anything about me changed since we first started talking?"
+    },
+    {
+      "id": "P3",
+      "kind": "calibration",
+      "date": "2026-10-24",
+      "time": "10:10",
+      "question": "Is my trouble with sleep a recurring worry or a one-off? Answer RECURRING or ONE-OFF, and state your confidence as HIGH, MEDIUM or LOW."
+    },
+    {
+      "id": "P5",
+      "kind": "temporal_correctness",
+      "date": "2026-10-24",
+      "time": "10:15",
+      "question": "How did my database exam go?"
+    },
+    {
+      "id": "P8",
+      "kind": "correction_visible",
+      "date": "2026-10-24",
+      "time": "10:20",
+      "question": "What do I usually drink in the morning?"
+    }
+  ]
+}
