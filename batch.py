@@ -19,11 +19,15 @@ def main():
     ap.add_argument("--workers", type=int, default=4)
     ap.add_argument("--max-calls", type=int, default=600)
     ap.add_argument("--min-tokens", type=int, default=0)
-    ap.add_argument("--script", default="run_persona.py")
+    ap.add_argument("--system", default="heim", choices=["heim", "full", "flat"],
+                    help="heim = Heim itself; full / flat = the two simple baselines")
+    ap.add_argument("--script", default=None)
     ap.add_argument("--dbs", nargs="+", default=["heim_test", "heim_test2", "heim_test3", "heim_test4"])
     args = ap.parse_args()
 
     safe_model = re.sub(r"[^A-Za-z0-9_.-]", "_", args.model)
+    model_dir = safe_model if args.system == "heim" else f"{args.system}__{safe_model}"
+    script = args.script or ("run_persona.py" if args.system == "heim" else "run_baseline.py")
     os.makedirs("results/batch_logs", exist_ok=True)
 
     jobs = []
@@ -31,13 +35,15 @@ def main():
         path = f"personas/{name}.json"
         pid = json.load(open(path))["id"]
         for r in args.runs:
-            done = os.path.exists(f"results/{pid}/{safe_model}/run{r}/probes.json")
+            done = os.path.exists(f"results/{pid}/{model_dir}/run{r}/probes.json")
             jobs.append({"path": path, "pid": pid, "run": r, "done": done})
     todo = [j for j in jobs if not j["done"]]
+    if args.system == "heim":
+        free = list(args.dbs[:args.workers])  # Heim needs one test database per worker
+    else:
+        free = [f"slot{i}" for i in range(args.workers)]  # baselines use no database
     print(f"{len(jobs)} runs requested, {len(jobs) - len(todo)} already finished, {len(todo)} to run, "
-          f"{min(args.workers, len(args.dbs))} at a time", flush=True)
-
-    free = list(args.dbs[:args.workers])
+          f"{len(free)} at a time ({args.system})", flush=True)
     running = []  # (proc, job, db, started)
     finished = []
     t0 = time.time()
@@ -45,11 +51,15 @@ def main():
         while todo and free:
             j = todo.pop(0)
             db = free.pop(0)
-            log = open(f"results/batch_logs/{j['pid']}_{safe_model}_run{j['run']}.log", "w")
-            cmd = [sys.executable, "-u", args.script, j["path"], "--backend", args.backend,
+            log = open(f"results/batch_logs/{j['pid']}_{model_dir}_run{j['run']}.log", "w")
+            cmd = [sys.executable, "-u", script, j["path"], "--backend", args.backend,
                    "--model", args.model, "--max-calls", str(args.max_calls),
                    "--min-tokens", str(args.min_tokens), "--run", str(j["run"])]
-            env = dict(os.environ, HEIM_TEST_DB=db)
+            if args.system != "heim":
+                cmd += ["--system", args.system]
+            env = dict(os.environ)
+            if args.system == "heim":
+                env["HEIM_TEST_DB"] = db
             p = subprocess.Popen(cmd, stdout=log, stderr=subprocess.STDOUT, env=env)
             running.append((p, j, db, time.time()))
             print(f"[{time.strftime('%H:%M:%S')}] started {j['pid']} run{j['run']} on {db}", flush=True)
@@ -61,7 +71,7 @@ def main():
                 still.append((p, j, db, started))
                 continue
             free.append(db)
-            ok = os.path.exists(f"results/{j['pid']}/{safe_model}/run{j['run']}/probes.json")
+            ok = os.path.exists(f"results/{j['pid']}/{model_dir}/run{j['run']}/probes.json")
             finished.append((j, ok, code, time.time() - started))
             print(f"[{time.strftime('%H:%M:%S')}] {'finished' if ok else 'FAILED'} {j['pid']} run{j['run']} "
                   f"(exit {code}, {int((time.time() - started) / 60)} min)", flush=True)
