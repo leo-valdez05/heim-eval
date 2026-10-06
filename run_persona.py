@@ -144,7 +144,7 @@ def run_persona(persona, db, ai, llm, clock, outdir, run_id=1):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("persona")
-    ap.add_argument("--backend", default="anthropic", choices=["anthropic", "openrouter"])
+    ap.add_argument("--backend", default="anthropic", choices=["anthropic", "openrouter", "groq"])
     ap.add_argument("--model", default="claude-sonnet-4-6")
     ap.add_argument("--temperature", type=float, default=0.0)
     ap.add_argument("--min-tokens", type=int, default=0,

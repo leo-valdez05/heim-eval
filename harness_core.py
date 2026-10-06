@@ -27,7 +27,13 @@ import urllib.request
 import urllib.error
 
 HEIM_PATH = os.path.expanduser(os.environ.get("HEIM_PATH", "~/ai-continuity-assistant"))
-TEST_DB = "heim_test"
+# Several test copies (heim_test, heim_test2, heim_test3 ...) let runs go in parallel.
+# The name must look like heim_test<number>, so the live database can never be picked.
+TEST_DB = os.environ.get("HEIM_TEST_DB", "heim_test")
+import re as _re
+
+if not _re.fullmatch(r"heim_test[0-9]*", TEST_DB):
+    raise SystemExit(f"REFUSING TO RUN: '{TEST_DB}' is not a test database name")
 
 _REAL_DATETIME = _dt.datetime
 _clock = None
@@ -195,7 +201,7 @@ class LLM:
 
     def __init__(self, backend, model, temperature=0.0, min_tokens=0,
                  log_path="llm_calls.jsonl", max_calls=None):
-        assert backend in ("anthropic", "openrouter")
+        assert backend in ("anthropic", "openrouter", "groq")
         self.backend = backend
         self.model = model
         self.temperature = temperature
@@ -220,6 +226,8 @@ class LLM:
         try:
             if self.backend == "anthropic":
                 text, tin, tout = self._call_anthropic(max_tokens, system, messages)
+            elif self.backend == "groq":
+                text, tin, tout = self._call_groq(max_tokens, system, messages)
             else:
                 text, tin, tout = self._call_openrouter(max_tokens, system, messages)
         except Exception as e:
@@ -263,24 +271,35 @@ class LLM:
         return text, resp.usage.input_tokens, resp.usage.output_tokens
 
     def _call_openrouter(self, max_tokens, system, messages):
-        key = os.environ.get("OPENROUTER_API_KEY")
+        return self._call_openai_compat(
+            "https://openrouter.ai/api/v1/chat/completions", "OPENROUTER_API_KEY", "OpenRouter",
+            {"max_tokens": max(max_tokens, self.min_tokens), "reasoning": {"effort": "low"}},
+            system, messages, attempts=4)
+
+    def _call_groq(self, max_tokens, system, messages):
+        # Groq speaks the same chat format; its free tier has per-minute limits,
+        # so it waits and retries when told to slow down.
+        return self._call_openai_compat(
+            "https://api.groq.com/openai/v1/chat/completions", "GROQ_API_KEY", "Groq",
+            {"max_completion_tokens": max(max_tokens, self.min_tokens), "reasoning_effort": "low"},
+            system, messages, attempts=8)
+
+    def _call_openai_compat(self, url, key_env, label, extra, system, messages, attempts):
+        key = os.environ.get(key_env)
         if not key:
-            raise RuntimeError("OPENROUTER_API_KEY is not set")
+            raise RuntimeError(f"{key_env} is not set")
         msgs = ([{"role": "system", "content": system}] if system else []) + list(messages)
-        payload = {
-            "model": self.model,
-            "messages": msgs,
-            "max_tokens": max(max_tokens, self.min_tokens),
-            "temperature": self.temperature,
-            "reasoning": {"effort": "low"},
-        }
+        payload = {"model": self.model, "messages": msgs, "temperature": self.temperature}
+        payload.update(extra)
         body = json.dumps(payload).encode("utf-8")
         last_error = None
-        for attempt in range(4):
+        for attempt in range(attempts):
+            wait = 2 ** min(attempt, 5)
             req = urllib.request.Request(
-                "https://openrouter.ai/api/v1/chat/completions", data=body,
+                url, data=body,
                 headers={"Authorization": "Bearer " + key,
-                         "Content-Type": "application/json"})
+                         "Content-Type": "application/json",
+                         "User-Agent": "heim-eval/1.0"})
             try:
                 with urllib.request.urlopen(req, timeout=120) as r:
                     data = json.loads(r.read().decode("utf-8"))
@@ -289,12 +308,22 @@ class LLM:
                 return text, usage.get("prompt_tokens", 0), usage.get("completion_tokens", 0)
             except urllib.error.HTTPError as e:
                 last_error = f"HTTP {e.code}"
-                if e.code not in (429, 500, 502, 503, 504):
-                    raise
+                if e.code == 429:
+                    try:
+                        wait = min(max(float(e.headers.get("retry-after", wait)), 1), 60)
+                    except Exception:
+                        pass
+                elif e.code not in (500, 502, 503, 504):
+                    detail = ""
+                    try:
+                        detail = e.read().decode("utf-8", "replace")[:200]
+                    except Exception:
+                        pass
+                    raise RuntimeError(f"{label} HTTP {e.code}: {detail}")
             except urllib.error.URLError as e:
                 last_error = str(e)
-            time.sleep(2 ** attempt)
-        raise RuntimeError(f"OpenRouter failed after retries: {last_error}")
+            time.sleep(wait)
+        raise RuntimeError(f"{label} failed after retries: {last_error}")
 
     def _log_full(self, row):
         """Full audit trail: exactly what was sent to the model and what came back."""
